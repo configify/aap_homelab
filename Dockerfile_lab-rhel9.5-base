@@ -1,0 +1,19 @@
+FROM redhat/ubi9-init:9.5
+
+RUN dnf install -y openssh-server sudo libselinux-utils
+
+RUN systemctl enable sshd
+
+RUN useradd kk
+RUN echo "kk:1q2w3e4r" | chpasswd
+RUN echo "kk ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/kk
+
+RUN mkdir -p /home/kk/.ssh
+RUN touch /home/kk/.ssh/authorized_keys
+RUN echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIESylgf3Jpbvaqr6+DK2ZHEDdty4vE3jQJ7m7Zv3Bla0 kk@all" >> /home/kk/.ssh/authorized_keys
+RUN chown kk:kk /home/kk/.ssh
+RUN chmod 700 /home/kk/.ssh
+RUN chown kk:kk /home/kk/.ssh/authorized_keys
+RUN chmod 600 /home/kk/.ssh/authorized_keys
+
+RUN echo "SMDEV_CONTAINER_OFF=1" > /etc/environment

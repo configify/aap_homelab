@@ -1,0 +1,19 @@
+FROM quay.io/configify/homelab:lab-rhel9.5-base
+
+RUN dnf install -y openssh-clients ncurses python pip iputils iproute
+
+COPY ed25519 /home/kk/.ssh/ed25519
+RUN chown kk:kk /home/kk/.ssh/ed25519
+RUN chmod 600 /home/kk/.ssh/ed25519
+
+RUN touch /home/kk/.ssh/ed25519.pub
+RUN echo "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIESylgf3Jpbvaqr6+DK2ZHEDdty4vE3jQJ7m7Zv3Bla0 kk@dev" > /home/kk/.ssh/ed25519.pub
+RUN chown kk:kk /home/kk/.ssh/ed25519.pub
+RUN chmod 644 /home/kk/.ssh/ed25519.pub
+RUN echo "IdentityFile ~/.ssh/ed25519" >> /home/kk/.ssh/config
+RUN chown kk:kk /home/kk/.ssh/config
+RUN chmod 600 /home/kk/.ssh/config
+
+RUN echo "ANSIBLE_CONFIG=/ansible/ansible.cfg" > /etc/environment
+
+RUN pip install ansible-core

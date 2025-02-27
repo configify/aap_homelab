@@ -1,0 +1,28 @@
+FROM quay.io/configify/homelab:lab-rhel9.5-dev
+
+RUN dnf install -y zsh wget git
+
+RUN wget -c https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz -O - | tar xz
+RUN chmod +x eza
+RUN chown root:root eza
+RUN mv eza /usr/local/bin/eza
+
+COPY bat /sbin
+RUN chown root:root /sbin/bat
+RUN chmod 755 /sbin/bat
+
+USER kk
+
+RUN wget -c https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -P /home/kk/
+RUN chmod +x /home/kk/install.sh
+RUN ./home/kk/install.sh
+RUN rm -rf /home/kk/install.sh
+
+RUN echo 'alias cat="/sbin/bat"' >> /home/kk/.bashrc
+RUN echo 'alias ls="eza -la"' >> /home/kk/.bashrc
+RUN echo 'zsh' >> /home/kk/.bashrc
+
+RUN echo 'alias cat="/sbin/bat"' >> /home/kk/.zshrc
+RUN echo 'alias ls="eza -la"' >> /home/kk/.zshrc
+
+USER root

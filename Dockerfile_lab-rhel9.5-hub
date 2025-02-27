@@ -1,0 +1,3 @@
+FROM quay.io/configify/homelab:lab-rhel9.5-base
+
+RUN dnf install -y openssh-clients python pip iputils iproute policycoreutils
